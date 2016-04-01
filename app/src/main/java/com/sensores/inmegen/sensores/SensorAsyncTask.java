@@ -51,19 +51,19 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
         ArrayList<Sensor> sensores = new ArrayList<>();
 
         for(Sensor sensor : params){
-
-            //sensor.setDatapoints(new ArrayList<DataPoint>());
             String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-60seconds", sensor.getTarget()));
             try {
                 JSONArray jsonArray = new JSONArray(json);
                 JSONObject dato = jsonArray.getJSONObject(0);
                 JSONArray datos = dato.getJSONArray("datapoints");
-                for(int i=datos.length()-1;i>=0;i--){
+                for(int i=0;i<datos.length();i++){
                     JSONArray datapoint = datos.getJSONArray(i);
                     if(!datapoint.isNull(0)){
                         DataPoint d = new DataPoint((float)datapoint.getDouble(0),datapoint.getLong(1));
                         sensor.getDatapoints().add(d);
-                        i=0; //break;
+                    }else{
+                        DataPoint d = new DataPoint(0,datapoint.getLong(1),true);
+                        sensor.getDatapoints().add(d);
                     }
                 }
             }catch(JSONException e){
@@ -85,23 +85,32 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
         super.onPostExecute(datos);
 
         int i = 0;
+        activity.removeFragments();
         for(Sensor sensor : datos){
             SharedPreferences sharedPreferences = activity.getSharedPreferences("opciones", Context.MODE_PRIVATE);
             int ver = VerificarSensor.verificar(sharedPreferences, sensor);
-            if(ver == -1){
-                //Debajo del minimo
-                crearNotificacion(sensor.getTarget(), "Esta debajo del valor minimo", i);
-            }else if(ver == 1){
-                //Arriba del maximo
-                crearNotificacion(sensor.getTarget(), "Esta arriba del valor maximo", i);
+            if(!sensor.isNull()) {
+                if (ver < -1) {
+                    //Debajo del minimo
+                    crearNotificacion(sensor.getTarget(), "Esta debajo del valor minimo", i);
+                } else if (ver > 1) {
+                    //Arriba del maximo
+                    crearNotificacion(sensor.getTarget(), "Esta arriba del valor maximo", i);
+                }
             }
+
+            activity.createFragment(sensor, i);
             i++;
         }
 
-        SensorArrayAdapter arrayAdapter =
+
+
+        /*SensorArrayAdapter arrayAdapter =
                 new SensorArrayAdapter(activity,
                         datos);
-        activity.getListView().setAdapter(arrayAdapter);
+        activity.getListView().setAdapter(arrayAdapter);*/
+
+
         //dialogo.dismiss();
 
     }

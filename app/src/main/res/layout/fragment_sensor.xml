@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="160dp"
+    android:layout_height="160dp"
+    tools:context="com.sensores.inmegen.sensores.SensorFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/sensorTarget"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:id="@+id/sensorValue"
+        android:text="32.0"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="20dp"
+        android:textColor="#000000"
+        android:layout_below="@+id/sensorTarget"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center"/>
+</RelativeLayout>

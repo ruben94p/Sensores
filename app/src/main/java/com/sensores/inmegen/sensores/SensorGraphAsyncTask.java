@@ -1,6 +1,5 @@
 package com.sensores.inmegen.sensores;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,8 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -19,34 +16,41 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by Ruben on 08/03/2016.
+ * Created by Ruben on 22/03/2016.
  */
-public class SensorExternalAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>> {
+public class SensorGraphAsyncTask extends AsyncTask<Sensor,String,Sensor> {
 
-    private Context context;
+    private ProgressDialog dialogo;
+    private GraficaActivity activity;
+    private String formato;
+    private int tiempo;
 
-    public SensorExternalAsyncTask(Context context){
-        this.context = context;
+    public SensorGraphAsyncTask(GraficaActivity activity, int tiempo, String formato){
+        this.activity = activity;
+        this.tiempo = tiempo;
+        this.formato = formato;
+        dialogo = new ProgressDialog(activity);
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        dialogo.setTitle(activity.getString(R.string.cargando));
+        dialogo.setCancelable(false);
+        dialogo.show();
     }
 
     @Override
-    protected ArrayList<Sensor> doInBackground(Sensor... params) {
-        ArrayList<Sensor> sensores = new ArrayList<>();
-
+    protected Sensor doInBackground(Sensor... params) {
         for(Sensor sensor : params){
-            String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-60seconds", sensor.getTarget()));
+            String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-%d%s", sensor.getTarget(),tiempo,formato));
+            sensor.setDatapoints(new ArrayList<DataPoint>());
             try {
                 JSONArray jsonArray = new JSONArray(json);
                 JSONObject dato = jsonArray.getJSONObject(0);
@@ -64,10 +68,10 @@ public class SensorExternalAsyncTask extends AsyncTask<Sensor, String, ArrayList
             }catch(JSONException e){
                 e.printStackTrace();
             }
-            sensores.add(sensor);
+            return sensor;
         }
 
-        return sensores;
+        return null;
     }
 
     @Override
@@ -76,45 +80,17 @@ public class SensorExternalAsyncTask extends AsyncTask<Sensor, String, ArrayList
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Sensor> datos) {
-        super.onPostExecute(datos);
+    protected void onPostExecute(Sensor sensor) {
+        super.onPostExecute(sensor);
 
-        int i = 0;
-        //Checar datos
-        for(Sensor sensor : datos){
-            SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
-            int ver = VerificarSensor.verificar(sharedPreferences, sensor);
-            if(!sensor.isNull()) {
-                if (ver == -1) {
-                    //Debajo del minimo
-                    crearNotificacion(sensor.getTarget(), "Esta debajo del valor minimo", i);
-                } else if (ver == 1) {
-                    //Arriba del maximo
-                    crearNotificacion(sensor.getTarget(), "Esta arriba del valor maximo", i);
-                }
-            }
-            i++;
+        dialogo.dismiss();
+
+        if(sensor != null){
+            activity.setValues(sensor);
         }
 
-
     }
 
-    private void crearNotificacion(String title, String text, int id){
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, MainActivity.class), 0);
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_warning)
-                        .setContentTitle(title)
-                        .setContentText(text);
-        mBuilder.setContentIntent(contentIntent);
-        mBuilder.setDefaults(Notification.DEFAULT_SOUND);
-        mBuilder.setAutoCancel(true);
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, mBuilder.build());
-    }
 
     private String getJSON(String jsonURL){
         HttpURLConnection connection = null;

@@ -24,14 +24,20 @@
             android:name=".Servicio"
             android:label="Alarm Service" />
 
-        <receiver android:name=".Alarm">
+        <receiver android:name=".Alarm" />
+
+        <receiver android:name=".ServiceAlarm">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".OpcionesActivity"></activity>
+        <activity android:name=".OpcionesActivity">
+
+        </activity>
+        <activity android:name=".GraficaActivity" />
+        <activity android:name=".OpcionesGraficaActivity"></activity>
     </application>
 
 </manifest>
