@@ -50,7 +50,7 @@ public class SensorFragment extends Fragment {
         TextView sensorValue = (TextView)view.findViewById(R.id.sensorValue);
 
         if(sensor != null) {
-            sensorText.setText(sensor.getTarget());
+            sensorText.setText(sensor.getNombre());
             sensorValue.setText(Float.toString(sensor.getValorActual()));
 
             if(sensor.isNull()){

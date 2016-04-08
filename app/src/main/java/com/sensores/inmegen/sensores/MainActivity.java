@@ -34,15 +34,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Sensor.setNombres(this);
+
         checarSensores = new ChecarSensores(this);
 
         inicializarOpciones();
-
-
-
-        /*if(!serviceRunning()){
-            startService(new Intent(this.getApplicationContext(), Servicio.class));
-        }*/
     }
 
     private void inicializarOpciones(){
@@ -103,16 +99,18 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.setId(layout_id);
 
         final MainActivity ref = this;
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ref, GraficaActivity.class);
-                i.putExtra("sensor", sensor);
-                startActivity(i);
-            }
-        });
+        if(!sensor.getTarget().equals("system.raspberrypi.puerta")) {
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(ref, GraficaActivity.class);
+                    i.putExtra("sensor", sensor);
+                    startActivity(i);
+                }
+            });
+        }
 
-        getSupportFragmentManager().beginTransaction().add(layout_id, SensorFragment.newInstance(sensor)).commit();
+        getSupportFragmentManager().beginTransaction().add(layout_id, SensorFragment.newInstance(sensor)).commitAllowingStateLoss();
 
         containers.add(linearLayout);
         relativeLayout.addView(linearLayout);

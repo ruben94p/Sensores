@@ -1,5 +1,8 @@
 package com.sensores.inmegen.sensores;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -26,6 +29,7 @@ public class Sensor implements Serializable {
     private String target;
     private ArrayList<DataPoint> datapoints;
     private boolean isNull;
+    private String nombre;
 
     public Sensor(String target){
         this.target = target;
@@ -66,6 +70,21 @@ public class Sensor implements Serializable {
             isNull = true;
         }
         return valorActual;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public static void setNombres(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
+        for(Sensor sensor : SENSORES){
+            sensor.setNombre(sharedPreferences.getString(sensor.getTarget(),sensor.getTarget()));
+        }
     }
 }
 

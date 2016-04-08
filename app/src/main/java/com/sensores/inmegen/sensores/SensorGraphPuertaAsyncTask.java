@@ -1,14 +1,7 @@
 package com.sensores.inmegen.sensores;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -24,14 +17,14 @@ import java.util.ArrayList;
 /**
  * Created by Ruben on 22/03/2016.
  */
-public class SensorGraphAsyncTask extends AsyncTask<Sensor,String,Sensor> {
+public class SensorGraphPuertaAsyncTask extends AsyncTask<Sensor,String,ArrayList<Sensor>> {
 
     private ProgressDialog dialogo;
     private GraficaActivity activity;
     private String formato;
     private int tiempo;
 
-    public SensorGraphAsyncTask(GraficaActivity activity, int tiempo, String formato){
+    public SensorGraphPuertaAsyncTask(GraficaActivity activity, int tiempo, String formato){
         this.activity = activity;
         this.tiempo = tiempo;
         this.formato = formato;
@@ -47,7 +40,8 @@ public class SensorGraphAsyncTask extends AsyncTask<Sensor,String,Sensor> {
     }
 
     @Override
-    protected Sensor doInBackground(Sensor... params) {
+    protected ArrayList<Sensor> doInBackground(Sensor... params) {
+        ArrayList<Sensor> sensores = new ArrayList<>();
         for(Sensor sensor : params){
             if(sensor!=null) {
                 String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-%d%s", sensor.getTarget(), tiempo, formato));
@@ -70,10 +64,10 @@ public class SensorGraphAsyncTask extends AsyncTask<Sensor,String,Sensor> {
                     e.printStackTrace();
                 }
             }
-            return sensor;
+            sensores.add(sensor);
         }
 
-        return null;
+        return sensores;
     }
 
     @Override
@@ -82,13 +76,13 @@ public class SensorGraphAsyncTask extends AsyncTask<Sensor,String,Sensor> {
     }
 
     @Override
-    protected void onPostExecute(Sensor sensor) {
+    protected void onPostExecute(ArrayList<Sensor> sensor) {
         super.onPostExecute(sensor);
 
         dialogo.dismiss();
 
         if(sensor != null){
-            activity.setValues(sensor);
+            activity.setValuesPuerta(sensor);
         }
 
     }

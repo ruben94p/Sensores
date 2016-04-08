@@ -15,19 +15,26 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.FillFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class GraficaActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
     private Sensor sensor;
+    private Sensor puerta;
     private LineChart lineChart;
 
     @Override
@@ -36,8 +43,13 @@ public class GraficaActivity extends AppCompatActivity implements OnChartValueSe
         setContentView(R.layout.activity_grafica);
         sensor = (Sensor)getIntent().getSerializableExtra("sensor");
 
+        if(sensor.getTarget().equals("system.raspberrypi.temperature_low_one")){
+            puerta = new Sensor("system.raspberrypi.puerta");
+        }
+
+
         TextView textView = (TextView)findViewById(R.id.sensor_name);
-        textView.setText(sensor.getTarget());
+        textView.setText(sensor.getNombre());
 
         lineChart = (LineChart)findViewById(R.id.chart);
 
@@ -74,8 +86,13 @@ public class GraficaActivity extends AppCompatActivity implements OnChartValueSe
         if(format.isEmpty()){
             format = Sensor.IN_SECONDS;
         }
-        SensorGraphAsyncTask asyncTask = new SensorGraphAsyncTask(this, tiempo, format);
-        asyncTask.execute(sensor);
+        if(puerta==null) {
+            SensorGraphAsyncTask asyncTask = new SensorGraphAsyncTask(this, tiempo, format);
+            asyncTask.execute(sensor);
+        }else{
+            SensorGraphPuertaAsyncTask asyncTask = new SensorGraphPuertaAsyncTask(this, tiempo, format);
+            asyncTask.execute(sensor,puerta);
+        }
     }
 
     @Override
@@ -107,53 +124,84 @@ public class GraficaActivity extends AppCompatActivity implements OnChartValueSe
         }
     }
 
-    /*
-    Probando la grafica
-    private void prueba(){
+    protected void setValues(Sensor sensor){
 
-        ArrayList<String> x = new ArrayList<String>();
+        ArrayList<DataPoint> val = sensor.getDatapoints();
+
+        ArrayList<String> x = new ArrayList<>();
         ArrayList<Entry> valores = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
-            x.add(Integer.toString(i+1));
-            valores.add(new Entry((float)(Math.random() * 10),(i+1)));
+        for (int i = 0; i < val.size(); i++) {
+            x.add(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(new Date(val.get(i).tiempo * 1000)));
+            if(val.get(i).isNull){
+
+            }else {
+                valores.add(new Entry(val.get(i).valor, (i)));
+            }
         }
 
         LineDataSet set1 = new LineDataSet(valores, "Valores");
 
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        set1.setColor(Color.BLUE);
+        set1.setCircleColor(Color.BLUE);
+        set1.setLineWidth(2.5f);
+        set1.setCircleRadius(3f);
+        set1.setFillAlpha(65);
+        set1.setDrawCircleHole(false);
+
+        List<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
+
         LineData data = new LineData(x, dataSets);
         lineChart.setData(data);
-    }*/
+        lineChart.notifyDataSetChanged();
 
-    protected void setValues(Sensor sensor){
+    }
 
-            ArrayList<DataPoint> val = sensor.getDatapoints();
+    protected void setValuesPuerta(ArrayList<Sensor> sensores){
 
-            ArrayList<String> x = new ArrayList<>();
-            ArrayList<Entry> valores = new ArrayList<>();
-            for (int i = 0; i < val.size(); i++) {
-                x.add(Integer.toString(i + 1));
-                if(val.get(i).isNull){
+        Sensor sensor = sensores.get(0);
+        Sensor puerta = sensores.get(1);
 
+        ArrayList<DataPoint> val = sensor.getDatapoints();
+        ArrayList<DataPoint> valp = puerta.getDatapoints();
+        ArrayList<Integer> colors = new ArrayList<>();
+        ArrayList<String> x = new ArrayList<>();
+        ArrayList<Entry> valores = new ArrayList<>();
+
+        for (int i = 0; i < val.size(); i++) {
+            x.add(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(new Date(val.get(i).tiempo * 1000)));
+
+            if(val.get(i).isNull){
+
+            }else {
+                valores.add(new Entry(val.get(i).valor, (i)));
+                if(valp.get(i).isNull){
+                    colors.add(Color.BLUE);
                 }else {
-                    valores.add(new Entry(val.get(i).valor, (i + 1)));
+                    if (valp.get(i).valor == 0) {
+                        colors.add(Color.GREEN);
+                    } else {
+                        colors.add(Color.RED);
+                    }
                 }
             }
+        }
 
-            LineDataSet set1 = new LineDataSet(valores, "Valores");
+        LineDataSet set1 = new LineDataSet(valores, "Valores");
 
-            set1.setColor(Color.BLUE);
-            set1.setCircleColor(Color.BLUE);
-            set1.setLineWidth(2.5f);
-            set1.setCircleRadius(3f);
-            set1.setFillAlpha(65);
-            set1.setDrawCircleHole(false);
+        set1.setColor(Color.BLUE);
+        set1.setLineWidth(2.5f);
+        set1.setCircleRadius(3f);
+        set1.setFillAlpha(65);
+        set1.setDrawCircleHole(false);
+        set1.setCircleColors(colors);
 
-            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-            dataSets.add(set1);
-            LineData data = new LineData(x, dataSets);
-            lineChart.setData(data);
+        List<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1);
+
+        LineData data = new LineData(x, dataSets);
+        lineChart.setData(data);
+        lineChart.notifyDataSetChanged();
 
     }
 
