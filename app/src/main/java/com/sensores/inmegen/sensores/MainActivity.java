@@ -121,9 +121,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+        Intent i;
         switch (item.getItemId()) {
             case R.id.definir:
-                Intent i = new Intent(this, OpcionesActivity.class);
+                i = new Intent(this, OpcionesActivity.class);
+                startActivity(i);
+                break;
+            case R.id.ayuda:
+                i = new Intent(this, AyudaActivity.class);
                 startActivity(i);
                 break;
         }

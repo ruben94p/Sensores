@@ -21,8 +21,8 @@ public class VerificarSensor {
     public static int verificar(SharedPreferences sharedPreferences, Sensor sensor){
         float min = sharedPreferences.getFloat(sensor.getNombreOpcion() + "_min", 0);
         float max = sharedPreferences.getFloat(sensor.getNombreOpcion() + "_max", 0);
-
-        float ref = ((min + max) / 2) - min;
+        
+        float ref = (max-min)/4;
 
         float va = sensor.getValorActual();
 

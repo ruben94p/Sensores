@@ -25,7 +25,6 @@
             android:label="Alarm Service" />
 
         <receiver android:name=".Alarm" />
-
         <receiver android:name=".ServiceAlarm">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -33,11 +32,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".OpcionesActivity">
-
-        </activity>
+        <activity android:name=".OpcionesActivity"></activity>
         <activity android:name=".GraficaActivity" />
-        <activity android:name=".OpcionesGraficaActivity"></activity>
+        <activity android:name=".OpcionesGraficaActivity" />
+        <activity android:name=".AyudaActivity"></activity>
     </application>
 
 </manifest>

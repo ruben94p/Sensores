@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -195,6 +196,9 @@ public class GraficaActivity extends AppCompatActivity implements OnChartValueSe
         set1.setFillAlpha(65);
         set1.setDrawCircleHole(false);
         set1.setCircleColors(colors);
+
+        Legend legend = lineChart.getLegend();
+        legend.setCustom(new int[]{Color.GREEN, Color.RED, Color.BLUE},new String[]{"Puerta abierta","Puerta cerrada","Desconocido"});
 
         List<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);

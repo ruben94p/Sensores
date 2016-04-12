@@ -87,10 +87,10 @@ public class SensorExternalAsyncTask extends AsyncTask<Sensor, String, ArrayList
             if(!sensor.isNull()) {
                 if (ver == -1) {
                     //Debajo del minimo
-                    crearNotificacion(sensor.getTarget(), "Esta debajo del valor minimo", i);
+                    crearNotificacion(sensor.getNombre(), "Esta debajo del valor minimo", i);
                 } else if (ver == 1) {
                     //Arriba del maximo
-                    crearNotificacion(sensor.getTarget(), "Esta arriba del valor maximo", i);
+                    crearNotificacion(sensor.getNombre(), "Esta arriba del valor maximo", i);
                 }
             }
             i++;
