@@ -53,7 +53,7 @@ public class SensorFragment extends Fragment {
             sensorText.setText(sensor.getNombre());
             sensorValue.setText(Float.toString(sensor.getValorActual()));
 
-            if(sensor.isNull()){
+            if(sensor.isNull() || sensor.getDatapoints().size() == 0){
                 sensorValue.setText("---");
             }else {
 

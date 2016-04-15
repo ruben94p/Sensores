@@ -31,22 +31,28 @@ import java.util.ArrayList;
 public class SensorExternalAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>> {
 
     private Context context;
+    private String url;
 
     public SensorExternalAsyncTask(Context context){
         this.context = context;
+
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
     }
 
     @Override
     protected ArrayList<Sensor> doInBackground(Sensor... params) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
+        url = sharedPreferences.getString("url","http://192.168.52.50").replaceAll("/$","");
+
         ArrayList<Sensor> sensores = new ArrayList<>();
 
         for(Sensor sensor : params){
-            String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-60seconds", sensor.getTarget()));
+            String json = getJSON(String.format("%s/render?target=%s&format=json&from=-60seconds", url, sensor.getTarget()));
             try {
                 JSONArray jsonArray = new JSONArray(json);
                 JSONObject dato = jsonArray.getJSONObject(0);
@@ -84,7 +90,7 @@ public class SensorExternalAsyncTask extends AsyncTask<Sensor, String, ArrayList
         for(Sensor sensor : datos){
             SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
             int ver = VerificarSensor.verificar(sharedPreferences, sensor);
-            if(!sensor.isNull()) {
+            if(!sensor.isNull() && sensor.daNotificaciones()) {
                 if (ver == -1) {
                     //Debajo del minimo
                     crearNotificacion(sensor.getNombre(), "Esta debajo del valor minimo", i);

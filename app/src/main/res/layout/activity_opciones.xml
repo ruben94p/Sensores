@@ -24,8 +24,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/url"
+            android:hint="URL"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="temperature_low_one"
             android:id="@+id/temperature_low_one"
+            android:layout_below="@+id/url"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
@@ -53,13 +67,22 @@
             android:layout_alignRight="@+id/temperature_low_one"
             android:layout_alignEnd="@+id/temperature_low_one" />
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notificaciones"
+            android:id="@+id/not1"
+            android:layout_below="@+id/low_one_min"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="temperature_A"
             android:id="@+id/temperature_A"
-            android:layout_below="@+id/low_one_min"
+            android:layout_below="@+id/not1"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
@@ -87,6 +110,15 @@
             android:layout_alignLeft="@+id/low_one_max"
             android:layout_alignStart="@+id/low_one_max" />
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notificaciones"
+            android:id="@+id/not2"
+            android:layout_below="@+id/temperature_a_min"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,7 +126,7 @@
             android:text="humidity_A"
             android:id="@+id/humidity_A"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/temperature_a_max"
+            android:layout_below="@+id/not2"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -121,6 +153,15 @@
             android:layout_alignLeft="@+id/temperature_a_max"
             android:layout_alignStart="@+id/temperature_a_max" />
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notificaciones"
+            android:id="@+id/not3"
+            android:layout_below="@+id/humidity_a_min"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,7 +169,7 @@
             android:text="puerta"
             android:id="@+id/puerta"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/humidity_a_max"
+            android:layout_below="@+id/not3"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -151,9 +192,18 @@
             android:ems="4"
             android:id="@+id/puerta_max"
             android:hint="Max"
-            android:layout_above="@+id/guardar"
+            android:layout_above="@+id/not4"
             android:layout_alignLeft="@+id/temperature_a_max"
             android:layout_alignStart="@+id/temperature_a_max" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notificaciones"
+            android:id="@+id/not4"
+            android:layout_below="@+id/puerta_min"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <Button
             android:layout_width="wrap_content"
@@ -161,7 +211,7 @@
             android:text="Guardar configuracion"
             android:id="@+id/guardar"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/puerta_min"
+            android:layout_below="@+id/not4"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="10dp"
             android:onClick="guardar"

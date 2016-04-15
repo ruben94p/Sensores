@@ -1,6 +1,8 @@
 package com.sensores.inmegen.sensores;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -41,10 +43,13 @@ public class SensorGraphPuertaAsyncTask extends AsyncTask<Sensor,String,ArrayLis
 
     @Override
     protected ArrayList<Sensor> doInBackground(Sensor... params) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("opciones", Context.MODE_PRIVATE);
+        String url = sharedPreferences.getString("url","http://192.168.52.50").replaceAll("/$","");
+
         ArrayList<Sensor> sensores = new ArrayList<>();
         for(Sensor sensor : params){
             if(sensor!=null) {
-                String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-%d%s", sensor.getTarget(), tiempo, formato));
+                String json = getJSON(String.format("%s/render?target=%s&format=json&from=-%d%s", url, sensor.getTarget(), tiempo, formato));
                 sensor.setDatapoints(new ArrayList<DataPoint>());
                 try {
                     JSONArray jsonArray = new JSONArray(json);

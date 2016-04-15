@@ -32,10 +32,12 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
 
     private ProgressDialog dialogo;
     private MainActivity activity;
+    private String url;
 
     public SensorAsyncTask(MainActivity activity){
         this.activity = activity;
         dialogo = new ProgressDialog(activity);
+
     }
 
     @Override
@@ -43,15 +45,20 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
         super.onPreExecute();
         dialogo.setTitle(activity.getString(R.string.cargando));
         dialogo.setCancelable(false);
+
+
         //dialogo.show();
     }
 
     @Override
     protected ArrayList<Sensor> doInBackground(Sensor... params) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("opciones", Context.MODE_PRIVATE);
+        url = sharedPreferences.getString("url","http://192.168.52.50").replaceAll("/$","");
         ArrayList<Sensor> sensores = new ArrayList<>();
 
         for(Sensor sensor : params){
-            String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-60seconds", sensor.getTarget()));
+            sensor.setDatapoints(new ArrayList<DataPoint>());
+            String json = getJSON(String.format("%s/render?target=%s&format=json&from=-60seconds", url,sensor.getTarget()));
             try {
                 JSONArray jsonArray = new JSONArray(json);
                 JSONObject dato = jsonArray.getJSONObject(0);
@@ -89,7 +96,7 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
         for(Sensor sensor : datos){
             SharedPreferences sharedPreferences = activity.getSharedPreferences("opciones", Context.MODE_PRIVATE);
             int ver = VerificarSensor.verificar(sharedPreferences, sensor);
-            if(!sensor.isNull()) {
+            if(!sensor.isNull() && sensor.daNotificaciones()) {
                 if (ver < -1) {
                     //Debajo del minimo
                     crearNotificacion(sensor.getNombre(), "Esta debajo del valor minimo", i);
@@ -103,15 +110,6 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
             i++;
         }
 
-
-
-        /*SensorArrayAdapter arrayAdapter =
-                new SensorArrayAdapter(activity,
-                        datos);
-        activity.getListView().setAdapter(arrayAdapter);*/
-
-
-        //dialogo.dismiss();
 
     }
 

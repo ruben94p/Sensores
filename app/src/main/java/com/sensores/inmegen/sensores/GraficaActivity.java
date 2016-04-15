@@ -155,6 +155,7 @@ public class GraficaActivity extends AppCompatActivity implements OnChartValueSe
         LineData data = new LineData(x, dataSets);
         lineChart.setData(data);
         lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
 
     }
 
@@ -198,7 +199,7 @@ public class GraficaActivity extends AppCompatActivity implements OnChartValueSe
         set1.setCircleColors(colors);
 
         Legend legend = lineChart.getLegend();
-        legend.setCustom(new int[]{Color.GREEN, Color.RED, Color.BLUE},new String[]{"Puerta abierta","Puerta cerrada","Desconocido"});
+        legend.setCustom(new int[]{Color.RED, Color.GREEN, Color.BLUE},new String[]{"Puerta abierta","Puerta cerrada","Desconocido"});
 
         List<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
@@ -206,6 +207,7 @@ public class GraficaActivity extends AppCompatActivity implements OnChartValueSe
         LineData data = new LineData(x, dataSets);
         lineChart.setData(data);
         lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
 
     }
 

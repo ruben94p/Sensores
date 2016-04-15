@@ -48,9 +48,11 @@ public class SensorGraphAsyncTask extends AsyncTask<Sensor,String,Sensor> {
 
     @Override
     protected Sensor doInBackground(Sensor... params) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("opciones", Context.MODE_PRIVATE);
+        String url = sharedPreferences.getString("url","http://192.168.52.50").replaceAll("/$","");
         for(Sensor sensor : params){
             if(sensor!=null) {
-                String json = getJSON(String.format("http://192.168.52.50/render?target=%s&format=json&from=-%d%s", sensor.getTarget(), tiempo, formato));
+                String json = getJSON(String.format("%s/render?target=%s&format=json&from=-%d%s", url, sensor.getTarget(), tiempo, formato));
                 sensor.setDatapoints(new ArrayList<DataPoint>());
                 try {
                     JSONArray jsonArray = new JSONArray(json);

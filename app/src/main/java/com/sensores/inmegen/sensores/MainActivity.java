@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Sensor.setNombres(this);
+        Sensor.setNotificaciones(this);
 
         checarSensores = new ChecarSensores(this);
 

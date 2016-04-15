@@ -30,10 +30,12 @@ public class Sensor implements Serializable {
     private ArrayList<DataPoint> datapoints;
     private boolean isNull;
     private String nombre;
+    private boolean notificaciones;
 
     public Sensor(String target){
         this.target = target;
         this.datapoints = new ArrayList<>();
+        this.notificaciones = true;
     }
 
     public String getTarget() {
@@ -61,6 +63,7 @@ public class Sensor implements Serializable {
         if(datapoints.size() > 0) {
             for(int i=datapoints.size()-1;i>=0;i--) {
                 if(!datapoints.get(i).isNull) {
+                    isNull = false;
                     valorActual = datapoints.get(i).valor;
                     return valorActual;
                 }
@@ -84,6 +87,21 @@ public class Sensor implements Serializable {
         SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
         for(Sensor sensor : SENSORES){
             sensor.setNombre(sharedPreferences.getString(sensor.getTarget(),sensor.getTarget()));
+        }
+    }
+
+    public boolean daNotificaciones() {
+        return notificaciones;
+    }
+
+    public void setNotificaciones(boolean notificaciones) {
+        this.notificaciones = notificaciones;
+    }
+
+    public static void setNotificaciones(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
+        for(Sensor sensor : SENSORES){
+            sensor.setNotificaciones(sharedPreferences.getBoolean(sensor.getTarget() + "_notificacion",true));
         }
     }
 }

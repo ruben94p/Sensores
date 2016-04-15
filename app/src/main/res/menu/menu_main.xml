@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/definir"
-        android:title="@string/definir_intervalos" />
+        android:title="@string/opciones" />
     <item android:id="@+id/ayuda"
         android:title="@string/ayuda"/>
 </menu>
