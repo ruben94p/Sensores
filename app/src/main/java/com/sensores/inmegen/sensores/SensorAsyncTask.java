@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Ruben on 08/03/2016.
@@ -90,7 +91,7 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
     @Override
     protected void onPostExecute(ArrayList<Sensor> datos) {
         super.onPostExecute(datos);
-
+        HashMap<String, ArrayList<Sensor>> sensores = new HashMap<>();
         int i = 0;
         activity.removeFragments();
         for(Sensor sensor : datos){
@@ -106,10 +107,23 @@ public class SensorAsyncTask extends AsyncTask<Sensor, String, ArrayList<Sensor>
                 }
             }
 
-            activity.createFragment(sensor, i);
+            if(sensores.get(sensor.getGrupo().getNombre()) == null){
+                ArrayList<Sensor> s = new ArrayList<>();
+                s.add(sensor);
+                sensores.put(sensor.getGrupo().getNombre(),s);
+            }else{
+                sensores.get(sensor.getGrupo().getNombre()).add(sensor);
+            }
+
+
             i++;
         }
 
+        int count = 0;
+        for(String id : sensores.keySet()){
+            activity.createFragment(sensores.get(id), id, count);
+            count++;
+        }
 
     }
 

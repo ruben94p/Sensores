@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         Sensor.setNombres(this);
         Sensor.setNotificaciones(this);
+        Sensor.setGrupos(this);
+        Grupo.setGrupos(this);
 
         checarSensores = new ChecarSensores(this);
 
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         containers.clear();
     }
 
-    protected void createFragment(final Sensor sensor, int id){
+    /*protected void createFragment(final Sensor sensor, int id){
         RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.container);
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setX((id % 2) * 160 * getResources().getDisplayMetrics().density + 0.5f);
@@ -117,6 +119,34 @@ public class MainActivity extends AppCompatActivity {
         relativeLayout.addView(linearLayout);
 
 
+    }*/
+
+    protected void createFragment(final ArrayList<Sensor> sensores, final String grupo, int id){
+        RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.container);
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setX((id % 2) * 160 * getResources().getDisplayMetrics().density + 0.5f);
+        linearLayout.setY((int) (id / 2) * 160 * getResources().getDisplayMetrics().density + 0.5f);
+
+        int layout_id = generateViewId();
+        linearLayout.setId(layout_id);
+
+        final MainActivity ref = this;
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ref, GrupoActivity.class);
+                i.putExtra("sensores", sensores);
+                i.putExtra("grupo", grupo);
+                startActivity(i);
+            }
+        });
+
+        getSupportFragmentManager().beginTransaction().add(layout_id, GrupoFragment.newInstance(sensores, grupo)).commitAllowingStateLoss();
+
+        containers.add(linearLayout);
+        relativeLayout.addView(linearLayout);
+
+
     }
 
     @Override
@@ -126,6 +156,14 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.definir:
                 i = new Intent(this, OpcionesActivity.class);
+                startActivity(i);
+                break;
+            case R.id.definirGrupos:
+                i = new Intent(this, OpcionesGrupoActivity.class);
+                startActivity(i);
+                break;
+            case R.id.administarGrupos:
+                i = new Intent(this, ListGrupoActivity.class);
                 startActivity(i);
                 break;
             case R.id.ayuda:

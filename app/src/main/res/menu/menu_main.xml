@@ -3,6 +3,10 @@
 
     <item android:id="@+id/definir"
         android:title="@string/opciones" />
+    <item android:id="@+id/definirGrupos"
+        android:title="Opciones Grupos" />
+    <item android:id="@+id/administarGrupos"
+        android:title="Administrar Grupos" />
     <item android:id="@+id/ayuda"
         android:title="@string/ayuda"/>
 </menu>

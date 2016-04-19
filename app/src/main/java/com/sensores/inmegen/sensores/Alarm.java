@@ -15,13 +15,17 @@ import android.util.Log;
  */
 public class Alarm extends BroadcastReceiver {
 
-    private static long UPDATE = 1000 * 60 * 5;
+    private static long UPDATE = 1000 * 60 * 1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock w = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CHECK");
         w.acquire();
+
+        Sensor.setNombres(context);
+        Sensor.setNotificaciones(context);
+        Sensor.setGrupos(context);
 
         SensorExternalAsyncTask asyncTask = new SensorExternalAsyncTask(context);
         asyncTask.execute(Sensor.SENSORES);

@@ -32,10 +32,13 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".OpcionesActivity"></activity>
+        <activity android:name=".OpcionesActivity" />
         <activity android:name=".GraficaActivity" />
         <activity android:name=".OpcionesGraficaActivity" />
-        <activity android:name=".AyudaActivity"></activity>
+        <activity android:name=".AyudaActivity" />
+        <activity android:name=".GrupoActivity" />
+        <activity android:name=".OpcionesGrupoActivity" />
+        <activity android:name=".ListGrupoActivity"></activity>
     </application>
 
 </manifest>

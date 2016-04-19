@@ -31,12 +31,14 @@ public class Sensor implements Serializable {
     private boolean isNull;
     private String nombre;
     private boolean notificaciones;
+    private String grupo;
 
     public Sensor(String target){
         this.target = target;
         this.datapoints = new ArrayList<>();
         this.notificaciones = true;
     }
+
 
     public String getTarget() {
         return target;
@@ -102,6 +104,22 @@ public class Sensor implements Serializable {
         SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
         for(Sensor sensor : SENSORES){
             sensor.setNotificaciones(sharedPreferences.getBoolean(sensor.getTarget() + "_notificacion",true));
+        }
+    }
+
+
+    public Grupo getGrupo(){
+        return Grupo.getGrupoByNombre(grupo);
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
+    }
+
+    public static void setGrupos(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("opciones", Context.MODE_PRIVATE);
+        for(Sensor sensor : SENSORES){
+            sensor.setGrupo(sharedPreferences.getString(sensor.getTarget() + "_grupo","Grupo 1"));
         }
     }
 }
